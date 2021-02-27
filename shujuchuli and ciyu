@@ -1,0 +1,42 @@
+#数据处理和生成词云
+```
+import os
+from wordcloud import WordCloud
+import jieba
+
+comments = []
+with open('demo.csv', 'r', encoding="utf-8") as csvfile: # 打开存储了评论的文本
+    data = csvfile.readlines()  #  读取文本数据
+    for item in data:
+        # print(item)
+        comments.append(item)
+    comment_after_split = jieba.lcut(str(comments))  #jieba分词
+
+with open('stop_words.txt', 'r', encoding="utf-8") as f:  # 打开停用词文本
+    stopwords = f.readlines()  # 读取停用词文本数据
+
+lastwords = ''
+for word in comment_after_split:  # for循环遍历分词后的每个词语
+    if word not in stopwords and len(word) > 1:  # 判断分词后的词语是否在停用词表内
+        if word != '\t':
+            lastwords += word
+            lastwords += ""
+print(lastwords)
+
+# 创建文件夹images
+def drwawordcloud(title, savapath='./images'):
+    if not os.path.exists(savapath):
+        os.mkdir(savapath)
+#词云的样式
+    wc = WordCloud(font_path='simkai.ttf', background_color='white', max_words=20000, width=1920, height=1080)
+    # 根据文本生成词云
+    wc.generate_from_text(lastwords)
+    filepath = savapath + '/' + title + '.png'
+    wc.to_file(filepath)
+drwawordcloud('demo')
+```
+
+
+
+
+
