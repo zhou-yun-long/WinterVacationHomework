@@ -1,0 +1,30 @@
+##爬取网页信息
+```
+import csv
+import requests
+import re
+
+# 设置头部和cookie，反爬，伪装
+head = {
+    'Cookie': 'bid=HNf-ab2-lJI; gr_user_id=031667b7-5f8a-4ede-b695-e52d9181fe11; __gads=ID=60db1851df53b133:T=1583253085:S=ALNI_MbBwCgmPG1hMoA4-Z0HSw_zcT0a0A; _vwo_uuid_v2=DD32BB6F8D421706DCD1CDE1061FB7A45|ef7ec70304dd2cf132f1c42b3f0610e7; viewed="1200840_27077140_26943161_25779298"; ll="118165"; __yadk_uid=5OpXTOy4NkvMrHZo7Rq6P8VuWvCSmoEe; ct=y; ap_v=0,6.0; push_doumail_num=0; push_noty_num=0; _pk_ref.100001.4cf6=%5B%22%22%2C%22%22%2C1583508410%2C%22https%3A%2F%2Fwww.pypypy.cn%2F%22%5D; _pk_ses.100001.4cf6=*; dbcl2="131182631:x7xeSw+G5a8"; ck=9iia; _pk_id.100001.4cf6=17997f85dc72b3e8.1583492846.4.1583508446.1583505298.',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 OPR/66.0.3515.115'}
+# 请求网页
+page = 10
+
+for i in range(1, page + 1):
+    url = 'https://movie.douban.com/subject/34841067/comments?start=%s&limit=20&sort=new_score&status=P' \
+          % ((i - 1) * 20)
+    #print(url)
+    # requests响应
+    r = requests.get(url=url, headers=head)
+    # 设置编码
+    r.encoding = "utf-8"
+    html = r.text
+    # 正则表达式筛选（提取所需要信息）
+    notice_types = re.findall(r'<span class="short">(.*?)</span>', html)
+    #print(notice_types)
+    with open('demo.csv', 'a', newline="", encoding="utf-8-sig")as csvfile:
+       writer = csv.writer(csvfile)
+       writer.writerow(notice_types)
+
+```
